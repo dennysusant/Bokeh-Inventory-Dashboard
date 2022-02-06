@@ -47,7 +47,7 @@ def item():
         p.line(x='x',y='y',source=source,legend_label='Stock')
         p.line(x='x',y='z',source=source,color='green',legend_label='Sold')
         p.circle(source=source, x="x", y="y", size=2, color="navy", alpha=0.5)
-        p.circle(source=source, x="x", y="z", size=2, color="red", alpha=0.5)
+        p.circle(source=source, x="x", y="z", size=2, color="green", alpha=0.5)
         p.add_tools(hover)
         p.legend.click_policy="hide"
         date_pattern=['%Y-%m-%d']
