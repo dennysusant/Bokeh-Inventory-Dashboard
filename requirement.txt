@@ -1,2 +1,1 @@
-Bokeh version==2.3.2
-Python version==3.8.8
+Bokeh==2.3.2
