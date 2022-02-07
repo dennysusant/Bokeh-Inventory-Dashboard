@@ -32,22 +32,22 @@ def item():
         listproduct.append((item,item))
     data=data.sort_values(by='date')
 
+
     def graph(item):
         #Get Data
         def get_data(item):
-            a=data[data['sku']==item]
+            a=data[data['sku']==item].groupby('date').sum().reset_index()
             return a
 
         #Graph History
         source=ColumnDataSource(dict(x=get_data(item)['date'],y=get_data(item)['stock'],z=get_data(item)['sold']))
+        source3=ColumnDataSource(dict(x=get_data(item)['date'],y=get_data(item)['stock'],z=get_data(item)['sold']))
         hover = HoverTool(tooltips=[('date', '@x{%F}'),('Stock','@y'),('Sold','@z')],
                   formatters={'@x': 'datetime'})
         
         p=figure(width=1300,height=425,x_range=(data['date'].min(),data['date'].max()),title='Stock and Sold History',tools='tap,pan,box_zoom,wheel_zoom,box_select')
         p.line(x='x',y='y',source=source,legend_label='Stock')
         p.line(x='x',y='z',source=source,color='green',legend_label='Sold')
-        p.circle(source=source, x="x", y="y", size=2, color="navy", alpha=0.5)
-        p.circle(source=source, x="x", y="z", size=2, color="green", alpha=0.5)
         p.add_tools(hover)
         p.legend.click_policy="hide"
         date_pattern=['%Y-%m-%d']
@@ -67,7 +67,7 @@ def item():
                     TableColumn(field="y", title="Stock"),
                     TableColumn(field="z", title="Sold")
                 ]
-        data_table_history = DataTable(source=source, columns=columns2, width=300, height=350)
+        data_table_history = DataTable(source=source3, columns=columns2, width=300, height=350)
         div_data_table_history=Div(text='<b>{} Item Stock and Sold History<b>'.format(item))
 
         # Current Stock ,total Sold items,status and category
@@ -156,6 +156,7 @@ def item():
         #Update Value from Dropdown
         def update():
             new_data=dict(x=get_data(select.value)['date'],y=get_data(select.value)['stock'],z=get_data(select.value)['sold'])
+            new_data3=dict(x=get_data(select.value)['date'],y=get_data(select.value)['stock'],z=get_data(select.value)['sold'])
             new_current_stock=data[(data['date']==data['date'].max()) & (data['sku']==select.value)].iloc[0][3]
             new_total_sold=int(data[data['sku']==select.value]['sold'].sum())
             new_category=data[data['sku']==select.value]['category'].iloc[1]
@@ -177,7 +178,7 @@ def item():
             new_data2=data[data['category']==new_category].groupby('sku').sum()['sold'].sort_values(ascending=False).reset_index()
             source.data=new_data
             source2.data=new_data2
-            p.title='{} Stock and Sold History'.format(select.value)
+            source3.data=new_data3
 
             new_line_data1=data[data['category']==new_category].groupby('sku').sum()['sold'].sort_values(ascending=False).reset_index()['sku'][:10]
             new_line_data2=data[data['category']==new_category].groupby('sku').sum()['sold'].sort_values(ascending=True).reset_index()['sku'][:10]
