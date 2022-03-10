@@ -7,6 +7,7 @@ from bokeh.plotting import figure,show
 from datetime import datetime
 from math import radians # Rotate axis ticks
 import numpy as np
+import finnhub
 from bokeh.layouts import gridplot,row,column
 import pandas as pd
 from bokeh.models.widgets import Tabs, Panel
